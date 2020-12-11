@@ -7,7 +7,6 @@ use Dldash\DataTransferObject\Objects\Undefined;
 use Dldash\DataTransferObject\Tests\DTO\OrderDto;
 use Dldash\DataTransferObject\Tests\DTO\UserDto;
 use Dldash\DataTransferObject\Tests\Objects\EmailAddress;
-use Error;
 use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\TestCase;
 use TypeError;
@@ -45,17 +44,17 @@ class DataTransferObjectTest extends TestCase
         $this->assertNull($dto->undefined);
     }
 
-    public function test_redundant_fields_passed(): void
+    public function test_redundant_fields_are_passed(): void
     {
-        $this->expectException(Error::class);
-
         $request = [
             'userId' => 100,
             'username' => 'admin',
             'emailAddress' => 'admin@test.com'
         ];
 
-        UserDto::create($request);
+        $dto = UserDto::create($request);
+
+        $this->assertEquals(['userId' => 100, 'username' => 'admin'], $dto->toArray());
     }
 
     public function test_all_fields_are_not_passed(): void

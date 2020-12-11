@@ -19,10 +19,14 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
     {
         $attributes = [];
 
-        [$properties, $nullable] = static::getProperties();
+        [$castable, $nullable, $properties] = static::getProperties();
         foreach ($items as $key => $value) {
-            $cast = $properties[$key] ?? null;
+            $exists = $properties[$key] ?? null;
+            if (!$exists) {
+                continue;
+            }
 
+            $cast = $castable[$key] ?? null;
             if (!$cast) {
                 $attributes[$key] = $value;
                 continue;
@@ -53,8 +57,7 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
     private static function getProperties(): array
     {
         // @todo add cache
-        $nullable = [];
-        $properties = [];
+        $castable = $nullable = $properties = [];
 
         $reflect = new ReflectionClass(static::class);
         foreach ($reflect->getProperties() as $property) {
@@ -62,23 +65,25 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
                 continue;
             }
 
+            $properties[$property->getName()] = true;
+
             $type = $property->getType();
 
             if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
-                $properties[$property->getName()] = $type->getName();
+                $castable[$property->getName()] = $type->getName();
             }
 
             if ($type instanceof ReflectionUnionType) {
                 $nullable[$property->getName()] = Undefined::create();
                 foreach ($type->getTypes() as $union) {
                     if (!$union->isBuiltin() && $union->getName() !== Undefined::class) {
-                        $properties[$property->getName()] = $union->getName();
+                        $castable[$property->getName()] = $union->getName();
                     }
                 }
             }
         }
 
-        return [$properties, $nullable];
+        return [$castable, $nullable, $properties];
     }
 
     #[Pure] public function toArray(): array
