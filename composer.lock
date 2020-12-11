@@ -860,12 +860,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "ba80dd5cbc80e33b0013a73e1e380f01313135b8"
+                "reference": "2635c1ccad5ccf427ae3037d09a8867cbe9655bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ba80dd5cbc80e33b0013a73e1e380f01313135b8",
-                "reference": "ba80dd5cbc80e33b0013a73e1e380f01313135b8",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2635c1ccad5ccf427ae3037d09a8867cbe9655bb",
+                "reference": "2635c1ccad5ccf427ae3037d09a8867cbe9655bb",
                 "shasum": ""
             },
             "require": {
@@ -955,7 +955,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-12-09T08:40:58+00:00"
+            "time": "2020-12-10T14:39:53+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -1020,12 +1020,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/code-unit.git",
-                "reference": "66a89468c9409d5bfee0f59b5c982ec93a345348"
+                "reference": "123d87ba8c96689bae9b9bc77e62c88421e2ee77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/code-unit/zipball/66a89468c9409d5bfee0f59b5c982ec93a345348",
-                "reference": "66a89468c9409d5bfee0f59b5c982ec93a345348",
+                "url": "https://api.github.com/repos/sebastianbergmann/code-unit/zipball/123d87ba8c96689bae9b9bc77e62c88421e2ee77",
+                "reference": "123d87ba8c96689bae9b9bc77e62c88421e2ee77",
                 "shasum": ""
             },
             "require": {
@@ -1069,7 +1069,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-12-09T08:37:11+00:00"
+            "time": "2020-12-11T06:05:20+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
