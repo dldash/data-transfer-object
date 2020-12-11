@@ -41,7 +41,10 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
 
             if ($reflect->implementsInterface(DataTransferObjectContract::class)) {
                 $attributes[$key] = $value !== null ? $cast::create($value) : null;
+                continue;
             }
+
+            $attributes[$key] = $value;
         }
 
         return new static(...array_merge($nullable, $attributes));
