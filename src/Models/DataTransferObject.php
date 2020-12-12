@@ -6,7 +6,6 @@ use Dldash\DataTransferObject\Attributes\SerializedName;
 use Dldash\DataTransferObject\Contracts\DataTransferObjectContract;
 use Dldash\DataTransferObject\Contracts\ValueObjectContract;
 use Dldash\DataTransferObject\Objects\Undefined;
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use ReflectionClass;
 use ReflectionException;
@@ -78,7 +77,7 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
             $properties[] = $property->getName();
 
             // Map
-            $attribute = static::getMapAttribute($property);
+            $attribute = static::getSerializedNameAttribute($property);
             if ($attribute) {
                 $map[$property->getName()] = $attribute->getName();
             }
@@ -104,7 +103,7 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
         return [$properties, $castable, $nullable, $map];
     }
 
-    private static function getMapAttribute(ReflectionProperty $property): SerializedName|null
+    private static function getSerializedNameAttribute(ReflectionProperty $property): SerializedName|null
     {
         foreach ($property->getAttributes(SerializedName::class) as $attribute) {
             /** @var SerializedName $instance */
@@ -114,13 +113,29 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
         return null;
     }
 
-    #[Pure] public function toArray(): array
+    public function toArray(): array
     {
-        // @todo return private properties too
-        return get_object_vars($this);
+        $items = [];
+
+        $reflect = new ReflectionClass(static::class);
+        foreach ($reflect->getProperties() as $property) {
+            if ($property->isStatic()) {
+                continue;
+            }
+
+            $attribute = static::getSerializedNameAttribute($property);
+            $key = $attribute ? $attribute->getName() : $property->getName();
+
+            $property->setAccessible(true);
+            $value = $property->getValue($this);
+
+            $items[$key] = $value instanceof DataTransferObjectContract ? $value->toArray() : $value;
+        }
+
+        return $items;
     }
 
-    #[Pure] public function jsonSerialize(): array
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

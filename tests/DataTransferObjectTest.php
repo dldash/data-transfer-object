@@ -57,6 +57,7 @@ class DataTransferObjectTest extends TestCase
         $dto = UserDto::create($request);
 
         $this->assertEquals(['userId' => 100, 'username' => 'admin'], $dto->toArray());
+        $this->assertEquals(['userId' => 100, 'username' => 'admin'], json_decode(json_encode($dto), true));
     }
 
     public function test_all_fields_are_not_passed(): void
@@ -135,8 +136,8 @@ class DataTransferObjectTest extends TestCase
 
         $dto = ProjectDto::create($request);
 
-        $this->assertEquals(100, $dto->id);
-        $this->assertEquals('Project', $dto->name);
-        $this->assertEquals(['id' => 100, 'name' => 'Project'], $dto->toArray());
+        $this->assertEquals(100, $dto->getId());
+        $this->assertEquals('Project', $dto->getName());
+        $this->assertEquals(['project_id' => 100, 'project_name' => 'Project'], $dto->toArray());
     }
 }
