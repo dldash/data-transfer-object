@@ -102,4 +102,15 @@ class DataTransferObjectTest extends TestCase
         $this->assertNull($dto->username);
         $this->assertEquals(['userId' => 100, 'username' => null], $dto->toArray());
     }
+
+    public function test_is_present(): void
+    {
+        $this->assertTrue(Undefined::isPresent(''));
+        $this->assertTrue(Undefined::isPresent(0));
+        $this->assertTrue(Undefined::isPresent([]));
+        $this->assertTrue(Undefined::isPresent(null));
+        $this->assertTrue(Undefined::isPresent(false));
+        $this->assertTrue(Undefined::isPresent(new EmailAddress("admin@test.com")));
+        $this->assertFalse(Undefined::isPresent(Undefined::create()));
+    }
 }
