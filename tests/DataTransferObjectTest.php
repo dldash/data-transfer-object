@@ -4,6 +4,8 @@ namespace Dldash\DataTransferObject\Tests;
 
 use Dldash\DataTransferObject\Contracts\DataTransferObjectContract;
 use Dldash\DataTransferObject\Objects\Undefined;
+use Dldash\DataTransferObject\Tests\Collections\UserDtoCollection;
+use Dldash\DataTransferObject\Tests\DTO\CollectionDto;
 use Dldash\DataTransferObject\Tests\DTO\OrderDto;
 use Dldash\DataTransferObject\Tests\DTO\ProjectDto;
 use Dldash\DataTransferObject\Tests\DTO\UserDto;
@@ -139,5 +141,32 @@ class DataTransferObjectTest extends TestCase
         $this->assertEquals(100, $dto->getId());
         $this->assertEquals('Project', $dto->getName());
         $this->assertEquals(['project_id' => 100, 'project_name' => 'Project'], $dto->toArray());
+    }
+
+    public function test_collection(): void
+    {
+        $request = [
+            'ids' => [10, 50, 100],
+            'numbers' => null,
+            'users' => [
+                [
+                    'userId' => 100,
+                    'username' => 'admin'
+                ],
+                [
+                    'userId' => 200,
+                    'username' => null
+                ]
+            ]
+        ];
+
+        $dto = CollectionDto::create($request);
+
+        $this->assertEquals([10, 50, 100], $dto->ids);
+        $this->assertNull($dto->numbers);
+
+        $this->assertInstanceOf(UserDtoCollection::class, $dto->users);
+        $this->assertInstanceOf(UserDto::class, $dto->users->toArray()[0]);
+        $this->assertInstanceOf(Undefined::class, $dto->admins);
     }
 }
