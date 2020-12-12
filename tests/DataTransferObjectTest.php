@@ -5,13 +5,22 @@ namespace Dldash\DataTransferObject\Tests;
 use Dldash\DataTransferObject\Contracts\DataTransferObjectContract;
 use Dldash\DataTransferObject\Objects\Undefined;
 use Dldash\DataTransferObject\Tests\DTO\OrderDto;
+use Dldash\DataTransferObject\Tests\DTO\ProjectDto;
 use Dldash\DataTransferObject\Tests\DTO\UserDto;
 use Dldash\DataTransferObject\Tests\Objects\EmailAddress;
+use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 
 class DataTransferObjectTest extends TestCase
 {
+    #[NoReturn] public function dd(mixed $value): void
+    {
+        print_r($value);
+        echo PHP_EOL;
+        exit();
+    }
+
     public function test_create(): void
     {
         $request = [
@@ -112,5 +121,22 @@ class DataTransferObjectTest extends TestCase
         $this->assertTrue(Undefined::isPresent(false));
         $this->assertTrue(Undefined::isPresent(new EmailAddress("admin@test.com")));
         $this->assertFalse(Undefined::isPresent(Undefined::create()));
+    }
+
+    public function test_serialized_name_attribute(): void
+    {
+        $request = [
+            'project_id' => 100,
+            'project_name' => 'Project',
+
+            'id' => 200,
+            'name' => null
+        ];
+
+        $dto = ProjectDto::create($request);
+
+        $this->assertEquals(100, $dto->id);
+        $this->assertEquals('Project', $dto->name);
+        $this->assertEquals(['id' => 100, 'name' => 'Project'], $dto->toArray());
     }
 }

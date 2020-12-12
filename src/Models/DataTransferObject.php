@@ -2,6 +2,7 @@
 
 namespace Dldash\DataTransferObject\Models;
 
+use Dldash\DataTransferObject\Attributes\SerializedName;
 use Dldash\DataTransferObject\Contracts\DataTransferObjectContract;
 use Dldash\DataTransferObject\Contracts\ValueObjectContract;
 use Dldash\DataTransferObject\Objects\Undefined;
@@ -10,6 +11,7 @@ use JsonSerializable;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
+use ReflectionProperty;
 use ReflectionUnionType;
 use RuntimeException;
 
@@ -19,12 +21,14 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
     {
         $attributes = [];
 
-        [$castable, $nullable, $properties] = static::getProperties();
-        foreach ($items as $key => $value) {
-            $exists = $properties[$key] ?? null;
-            if (!$exists) {
+        [$properties, $castable, $nullable, $map] = static::getProperties();
+        foreach ($properties as $key) {
+            $serialized = $map[$key] ?? $key;
+            if (!array_key_exists($serialized, $items)) {
                 continue;
             }
+
+            $value = $items[$serialized];
 
             $cast = $castable[$key] ?? null;
             if (!$cast) {
@@ -32,11 +36,7 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
                 continue;
             }
 
-            try {
-                $reflect = new ReflectionClass($cast);
-            } catch (ReflectionException $e) {
-                throw new RuntimeException($e);
-            }
+            $reflect = static::reflect($cast);
 
             if ($reflect->implementsInterface(ValueObjectContract::class)) {
                 $attributes[$key] = $value !== null ? new $cast($value) : null;
@@ -54,10 +54,19 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
         return new static(...array_merge($nullable, $attributes));
     }
 
+    private static function reflect(string $cast): ReflectionClass
+    {
+        try {
+            return new ReflectionClass($cast);
+        } catch (ReflectionException $e) {
+            throw new RuntimeException($e);
+        }
+    }
+
     private static function getProperties(): array
     {
         // @todo add cache
-        $castable = $nullable = $properties = [];
+        $properties = $castable = $nullable = $map = [];
 
         $reflect = new ReflectionClass(static::class);
         foreach ($reflect->getProperties() as $property) {
@@ -65,14 +74,23 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
                 continue;
             }
 
-            $properties[$property->getName()] = true;
+            // Properties
+            $properties[] = $property->getName();
+
+            // Map
+            $attribute = static::getMapAttribute($property);
+            if ($attribute) {
+                $map[$property->getName()] = $attribute->getName();
+            }
 
             $type = $property->getType();
 
+            // Castable
             if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
                 $castable[$property->getName()] = $type->getName();
             }
 
+            // Nullable and castable
             if ($type instanceof ReflectionUnionType) {
                 $nullable[$property->getName()] = Undefined::create();
                 foreach ($type->getTypes() as $union) {
@@ -83,7 +101,17 @@ abstract class DataTransferObject implements DataTransferObjectContract, JsonSer
             }
         }
 
-        return [$castable, $nullable, $properties];
+        return [$properties, $castable, $nullable, $map];
+    }
+
+    private static function getMapAttribute(ReflectionProperty $property): SerializedName|null
+    {
+        foreach ($property->getAttributes(SerializedName::class) as $attribute) {
+            /** @var SerializedName $instance */
+            $instance = $attribute->newInstance();
+            return $instance;
+        }
+        return null;
     }
 
     #[Pure] public function toArray(): array
