@@ -7,18 +7,11 @@ use Dldash\DataTransferObject\Objects\Undefined;
 use Dldash\DataTransferObject\Tests\DTO\OrderDto;
 use Dldash\DataTransferObject\Tests\DTO\UserDto;
 use Dldash\DataTransferObject\Tests\Objects\EmailAddress;
-use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 
 class DataTransferObjectTest extends TestCase
 {
-    #[NoReturn] private function dd($value): void
-    {
-        print_r($value);
-        exit();
-    }
-
     public function test_create(): void
     {
         $request = [

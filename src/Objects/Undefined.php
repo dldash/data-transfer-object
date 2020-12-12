@@ -13,6 +13,11 @@ final class Undefined implements JsonSerializable, Stringable
         return new Undefined();
     }
 
+    public static function isPresent(mixed $o): bool
+    {
+        return !$o instanceof Undefined;
+    }
+
     public function jsonSerialize(): array|null
     {
         return null;
