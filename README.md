@@ -22,6 +22,7 @@ composer require dldash/data-transfer-object
 * 👉 [Nested DTO classes](#nested-dto-classes)
 * 👉 [Typed DTO arrays and collections](#typed-dto-arrays-and-collections)
 * 👉 [Partial update](#partial-update)
+* 👉 [Serialized name](#serialized-name)
 
 ### Simple DTO
 
@@ -232,6 +233,41 @@ $dto = OrderDto::create($request);
 if (Undefined::isPresent($dto->name)) {
     // Update this field
 }
+```
+
+### Serialized name
+
+DTO class:
+
+```php
+use Dldash\DataTransferObject\Attributes\SerializedName;
+use Dldash\DataTransferObject\Models\DataTransferObject;
+
+class OrderDto extends DataTransferObject
+{
+    public function __construct(
+        #[SerializedName('order_id')]
+        public int $id,
+
+        #[SerializedName('order_name')]
+        public string $name
+    ) {}
+}
+```
+
+Usage:
+
+```php
+$request = [
+    'order_id' => 100,
+    'order_name' => 'Order'
+];
+
+$dto = OrderDto::create($request);
+
+echo $dto->id; // 100
+echo $dto->name; // Order
+echo json_encode($dto); // {"order_id": 100, "order_name": "Order"}
 ```
 
 ## 💫 Testing
