@@ -135,6 +135,60 @@ $request = [
 $dto = OrderDto::create($request);
 ```
 
+### DTO arrays and collections
+
+You can use arrays of DTO objects.  
+To do this, you need to inherit the abstract `DataTransferObjectCollection` class.
+
+Collection class:
+
+```php
+use Dldash\DataTransferObject\Objects\DataTransferObjectCollection;
+
+/** @method ArrayIterator|UserDto[] getIterator() */
+class UserDtoCollection extends DataTransferObjectCollection
+{
+    protected function create(mixed $item): object
+    {
+        return UserDto::create($item);
+    }
+}
+```
+
+DTO class:
+
+```php
+use Dldash\DataTransferObject\Models\DataTransferObject;
+
+class OrderDto extends DataTransferObject
+{
+    public function __construct(
+        public int $orderId,
+        public UserDtoCollection $users
+    ) {}
+}
+```
+
+Usage:
+
+```php
+$request = [
+    'orderId' => 100,
+    'users' => [
+        [
+            'userId' => 100,
+            'username' => 'admin'
+        ],
+        [
+            'userId' => 200,
+            'username' => null
+        ]
+    ]
+];
+
+$dto = OrderDto::create($request);
+```
+
 ## 💫 Testing
 
 ```bash
@@ -142,15 +196,10 @@ composer test
 ```
 
 [ico-version]: https://img.shields.io/packagist/v/dldash/data-transfer-object.svg?style=flat-square
-
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-
 [ico-downloads]: https://img.shields.io/packagist/dt/dldash/data-transfer-object.svg?style=flat-square
-
 [ico-build]: https://github.com/dldash/data-transfer-object/workflows/build/badge.svg
 
 [url-packagist]: https://packagist.org/packages/dldash/data-transfer-object
-
 [url-releases]: https://github.com/dldash/data-transfer-object/releases
-
 [url-build]: https://github.com/dldash/data-transfer-object/actions
