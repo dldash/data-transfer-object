@@ -17,7 +17,7 @@ composer require dldash/data-transfer-object
 
 ## ✨ Usage
 
-* (#simple-dto)
+* [Simple DTO](#simple-dto)
 
 ### Simple DTO
 
