@@ -7,7 +7,7 @@
 
 ## ⚡️ Requirements
 
-* 🐘 PHP 8.0
+* 🐘 PHP >= 8.0
 
 ## 💥 Installation
 
