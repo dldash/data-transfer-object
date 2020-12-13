@@ -17,6 +17,10 @@ composer require dldash/data-transfer-object
 
 ## ✨ Usage
 
+### Simple DTO
+
+If extra fields are passed that are not described in the DTO class, they will be ignored.
+
 ```php
 use Dldash\DataTransferObject\Models\DataTransferObject;
 
@@ -37,6 +41,64 @@ $request = [
 ];
 
 $dto = UserDto::create($request);
+```
+
+### Value Objects
+
+You can also use value objects in DTO classes.  
+All you need is to implement the `ValueObjectContract` interface.
+
+Value object class:
+
+```php
+use Dldash\DataTransferObject\Contracts\ValueObjectContract;
+
+class EmailAddress implements ValueObjectContract, JsonSerializable
+{
+    public function __construct(private string $emailAddress)
+    {
+        if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException("Email address [{$emailAddress}] is not valid.");
+        }
+
+        $this->emailAddress = strtolower($emailAddress);
+    }
+
+    public function value(): string
+    {
+        return $this->emailAddress;
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->emailAddress;
+    }
+}
+```
+
+DTO class:
+
+```php
+use Dldash\DataTransferObject\Models\DataTransferObject;
+
+class OrderDto extends DataTransferObject
+{
+    public function __construct(
+        public int $orderId,
+        public EmailAddress $emailAddress
+    ) {}
+}
+```
+
+Usage:
+
+```php
+$request = [
+    'orderID' => 100,
+    'emailAddress' => 'admin@test.com'
+];
+
+$dto = OrderDto::create($request);
 ```
 
 ## 💫 Testing
