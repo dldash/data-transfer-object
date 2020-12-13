@@ -17,7 +17,11 @@ composer require dldash/data-transfer-object
 
 ## ✨ Usage
 
-* [Simple DTO](#simple-dto)
+* 👉 [Simple DTO](#simple-dto)
+* 👉 [Value Objects](#value-objects)
+* 👉 [Nested DTO classes](#nested-dto-classes)
+* 👉 [Typed DTO arrays and collections](#typed-dto-arrays-and-collections)
+* 👉 [Partial update](#partial-update)
 
 ### Simple DTO
 
