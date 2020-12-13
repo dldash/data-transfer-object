@@ -17,6 +17,8 @@ composer require dldash/data-transfer-object
 
 ## ✨ Usage
 
+* (#simple-dto)
+
 ### Simple DTO
 
 If extra fields are passed that are not described in the DTO class, they will be ignored.
