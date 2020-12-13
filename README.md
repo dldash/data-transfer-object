@@ -21,6 +21,8 @@ composer require dldash/data-transfer-object
 
 If extra fields are passed that are not described in the DTO class, they will be ignored.
 
+DTO class:
+
 ```php
 use Dldash\DataTransferObject\Models\DataTransferObject;
 
@@ -32,6 +34,8 @@ class UserDto extends DataTransferObject
     ) {}
 }
 ```
+
+Usage:
 
 ```php
 $request = [
@@ -94,8 +98,38 @@ Usage:
 
 ```php
 $request = [
-    'orderID' => 100,
+    'orderId' => 100,
     'emailAddress' => 'admin@test.com'
+];
+
+$dto = OrderDto::create($request);
+```
+
+### Nested DTO classes
+
+DTO class:
+
+```php
+use Dldash\DataTransferObject\Models\DataTransferObject;
+
+class OrderDto extends DataTransferObject
+{
+    public function __construct(
+        public int $orderId,
+        public UserDto $user
+    ) {}
+}
+```
+
+Usage:
+
+```php
+$request = [
+    'orderId' => 100,
+    'user' => [
+        'userId' => 100,
+        'username' => 'admin'
+    ]
 ];
 
 $dto = OrderDto::create($request);
