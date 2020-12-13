@@ -135,7 +135,7 @@ $request = [
 $dto = OrderDto::create($request);
 ```
 
-### DTO arrays and collections
+### Typed DTO arrays and collections
 
 You can use arrays of DTO objects.  
 To do this, you need to inherit the abstract `DataTransferObjectCollection` class.
@@ -187,6 +187,45 @@ $request = [
 ];
 
 $dto = OrderDto::create($request);
+```
+
+### Partial update
+
+Let's imagine that we need to update some model, but we want to do a partial update.
+In this case, not all the required fields can be passed to the DTO class.
+You can add the `Undefined` type to the desired field.
+
+NOTE: If you pass a `null` value, it will also be `null`.
+
+DTO class:
+
+```php
+use Dldash\DataTransferObject\Objects\Undefined;
+use Dldash\DataTransferObject\Models\DataTransferObject;
+
+class OrderDto extends DataTransferObject
+{
+    public function __construct(
+        public int $orderId,
+        public string|null|Undefined $name
+    ) {}
+}
+```
+
+Usage:
+
+```php
+use Dldash\DataTransferObject\Objects\Undefined;
+
+$request = [
+    'orderId' => 100
+];
+
+$dto = OrderDto::create($request);
+
+if (Undefined::isPresent($dto->name)) {
+    // Update this field
+}
 ```
 
 ## 💫 Testing
