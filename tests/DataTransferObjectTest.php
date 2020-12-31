@@ -10,19 +10,11 @@ use Dldash\DataTransferObject\Tests\DTO\OrderDto;
 use Dldash\DataTransferObject\Tests\DTO\ProjectDto;
 use Dldash\DataTransferObject\Tests\DTO\UserDto;
 use Dldash\DataTransferObject\Tests\Objects\EmailAddress;
-use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 
 class DataTransferObjectTest extends TestCase
 {
-    #[NoReturn] public function dd(mixed $value): void
-    {
-        print_r($value);
-        echo PHP_EOL;
-        exit();
-    }
-
     public function test_create(): void
     {
         $request = [

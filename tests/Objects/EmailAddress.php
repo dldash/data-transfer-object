@@ -6,7 +6,7 @@ use Dldash\DataTransferObject\Contracts\ValueObjectContract;
 use InvalidArgumentException;
 use JsonSerializable;
 
-class EmailAddress implements ValueObjectContract, JsonSerializable
+final class EmailAddress implements ValueObjectContract, JsonSerializable
 {
     public function __construct(private string $value)
     {
